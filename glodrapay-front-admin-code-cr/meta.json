@@ -1,0 +1,1 @@
+{"description":"执行代码审查（Code Review）。按 6 步流程在 PR/Commit/当前更改上运行 CR，引用本 skill 内置 `coding-standards.md` 的规则，生成 `.md` + `.html` 报告并归档到项目根 `code-cr/`。支持 OpenSpec 集成和历史提醒。","name":"glodrapay-front-admin-code-cr","version":"1.0.0"}

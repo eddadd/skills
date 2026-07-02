@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CR 审查报告 - {{CR_ID}}</title>
+  <style>
+    :root {
+      --primary: #1a73e8;
+      --danger: #d93025;
+      --warning: #f9ab00;
+      --success: #188038;
+      --suggestion: #1a73e8;
+      --bg: #ffffff;
+      --bg-alt: #f8f9fa;
+      --border: #dadce0;
+      --text: #202124;
+      --text-secondary: #5f6368;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans SC", sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.6;
+      padding: 40px 20px;
+    }
+    .container { max-width: 960px; margin: 0 auto; }
+    h1 { font-size: 24px; margin-bottom: 24px; color: var(--primary); }
+    h2 { font-size: 18px; margin: 32px 0 16px; padding-bottom: 8px; border-bottom: 2px solid var(--border); }
+    h3 { font-size: 15px; margin: 20px 0 12px; }
+    table { width: 100%; border-collapse: collapse; margin: 12px 0 20px; font-size: 14px; }
+    th, td { padding: 8px 12px; text-align: left; border: 1px solid var(--border); }
+    th { background: var(--bg-alt); font-weight: 600; white-space: nowrap; }
+    .meta-table td:first-child { width: 140px; font-weight: 600; background: var(--bg-alt); }
+    .tag {
+      display: inline-block; padding: 2px 8px; border-radius: 4px;
+      font-size: 12px; font-weight: 600; white-space: nowrap;
+    }
+    .tag-s { background: #fce8e6; color: var(--danger); }
+    .tag-m { background: #fef7e0; color: var(--warning); }
+    .tag-r { background: #e8f0fe; color: var(--suggestion); }
+    .tag-pass { background: #e6f4ea; color: var(--success); }
+    .tag-fail { background: #fce8e6; color: var(--danger); }
+    .tag-pending { background: #f1f3f4; color: var(--text-secondary); }
+    .status-icon { font-size: 16px; }
+    .alert {
+      padding: 12px 16px; border-radius: 8px; margin: 12px 0;
+      font-size: 14px; line-height: 1.5;
+    }
+    .alert-danger { background: #fce8e6; border-left: 4px solid var(--danger); }
+    .alert-warning { background: #fef7e0; border-left: 4px solid var(--warning); }
+    .alert-info { background: #e8f0fe; border-left: 4px solid var(--suggestion); }
+    .alert-success { background: #e6f4ea; border-left: 4px solid var(--success); }
+    .conclusion-box {
+      padding: 20px; border-radius: 8px; margin: 20px 0;
+      border: 2px solid var(--border);
+    }
+    .conclusion-box.approved { border-color: var(--success); }
+    .conclusion-box.rework { border-color: var(--warning); }
+    .conclusion-box.rejected { border-color: var(--danger); }
+    .conclusion-option { margin: 8px 0; }
+    .footer { margin-top: 40px; padding-top: 16px; border-top: 1px solid var(--border); font-size: 12px; color: var(--text-secondary); }
+    code { background: var(--bg-alt); padding: 2px 6px; border-radius: 3px; font-size: 13px; }
+    .file-path { font-family: monospace; font-size: 13px; color: var(--text-secondary); }
+    .empty-state { color: var(--text-secondary); font-style: italic; padding: 8px 0; }
+    @media print {
+      body { padding: 0; }
+      .container { max-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔍 CR 审查报告</h1>
+
+    <table class="meta-table">
+      <tr><td>CR 编号</td><td><strong>{{CR_ID}}</strong></td></tr>
+      <tr><td>提交者</td><td>@{{SUBMITTER}}</td></tr>
+      <tr><td>审查者</td><td>@{{REVIEWER}}</td></tr>
+      <tr><td>审查日期</td><td>{{DATE}}</td></tr>
+      <tr><td>分支 / PR</td><td><code>{{BRANCH}}</code> → <code>{{TARGET_BRANCH}}</code></td></tr>
+      <tr><td>PR 链接</td><td><a href="{{PR_URL}}" target="_blank">{{PR_URL}}</a></td></tr>
+      <tr><td>变更摘要</td><td>{{SUMMARY}}</td></tr>
+    </table>
+
+    <!-- OpenSpec -->
+    <h2>📦 OpenSpec 关联</h2>
+    <table>
+      <tr><td>关联变更</td><td>{{CHANGE_NAME}}</td></tr>
+      <tr><td>变更范围</td><td>{{CHANGE_SCOPE}}</td></tr>
+      <tr><td>关联规范</td><td>{{SPEC_FILES}}</td></tr>
+    </table>
+
+    <h3>场景覆盖检查</h3>
+    <table>
+      <tr><th>场景</th><th>状态</th></tr>
+      {{SCENARIO_COVERAGE_ROWS}}
+    </table>
+
+    <!-- Step 1 -->
+    <h2>✅ 前置检查结果</h2>
+    <table>
+      <tr><th>检查项</th><th>状态</th></tr>
+      <tr><td><code>pnpm lint</code></td><td>{{LINT_STATUS_HTML}}</td></tr>
+      <tr><td><code>pnpm typecheck</code></td><td>{{TYPECHECK_STATUS_HTML}}</td></tr>
+      <tr><td><code>pnpm lint:stylelint</code></td><td>{{STYLELINT_STATUS_HTML}}</td></tr>
+    </table>
+
+    <!-- Step 3 -->
+    <h2>📋 问题清单</h2>
+
+    <h3>🔴 违规规则项</h3>
+    {{DIRECT_TRIGGERS_HTML}}
+
+    <h3>🟠 整改优化项</h3>
+    {{OPTIMIZATION_ITEMS_HTML}}
+
+    <h3>❓ 需人工审查项</h3>
+    {{MANUAL_REVIEW_ITEMS_HTML}}
+
+    <h3>🟢 已确认通过项（未触发）</h3>
+    <p class="empty-state">{{PASSED_RULES_TEXT}}</p>
+
+    <!-- Step 4 -->
+    <h2>🕐 历史重复触发提醒</h2>
+    {{HISTORICAL_REMINDERS_HTML}}
+
+    <!-- Step 6 -->
+    <h2>📌 审查结论</h2>
+    <div class="conclusion-box {{CONCLUSION_CLASS}}">
+      <div class="conclusion-option"><label><input type="checkbox" {{APPROVED_CHECKED}} disabled> ✅ 批准通过 — 可合并 / 可提交</label></div>
+      <div class="conclusion-option"><label><input type="checkbox" {{REWORK_CHECKED}} disabled> 🔄 需整改后重审 — 请在 {{DEADLINE}} 前完成修改</label></div>
+      <div class="conclusion-option"><label><input type="checkbox" {{REJECTED_CHECKED}} disabled> ❌ 驳回 — 原因：{{REJECT_REASON}}</label></div>
+    </div>
+
+    <h3>审查意见</h3>
+    <p>{{REVIEW_COMMENTS}}</p>
+
+    <div class="footer">
+      <p>报告自动生成于 {{GENERATED_TIME}}</p>
+      <p>模板版本: 1.2</p>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,1 @@
+{"description":"基于 Conventional Commits 规范生成标准化 Git 提交信息。自动分析 diff 判断类型与范围，生成三段式提交信息（Header + Body + Footer），支持中文提交信息。","name":"glodrapay-front-admin-git-commit","version":"1.0.0"}
