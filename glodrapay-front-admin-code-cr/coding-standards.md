@@ -367,18 +367,20 @@ const normalizedFullName = computed(() => {
 - **等级**: 🟡 M（Warning）
 - **来源**: 前端规范.md → 2.2.4
 - **检查方式**: 人工审查
-- **描述**: `<script setup>` 内的声明顺序：import → defineOptions/defineProps/defineEmits → 变量 → hooks → computed/watch → 方法 → onMounted → defineExpose
+- **描述**: `<script setup>` 内的声明顺序：导入 → Hook → 状态 → 参数 → onBeforeMount → watch → 方法
 
 ```ts
 // ✅ 顺序
-import { ... }            // 1. 导入
-defineProps({ ... })      // 2. Props
-const data = ref()        // 3. 变量
-const { t } = useI18n()  // 4. Hooks
-const total = computed()  // 5. computed/watch
-watch(() => ...)          //
-onMounted(() => getList()) // 6. 生命周期
-const getList = async () => {} // 7. 方法
+1. 第三方库导入
+2. 项目内部导入 — 常量
+3. 项目内部导入 — 组件
+4. 项目内部导入 — API / Hooks / Utils
+5. Hook 调用
+6. 响应式状态声明（所有 ref / reactive）
+7. 请求参数（commonParams + requestParam）
+8. `onBeforeMount` 生命周期
+9. `watch` 监听
+10. 方法定义（按业务流程排序）
 ```
 
 ***
