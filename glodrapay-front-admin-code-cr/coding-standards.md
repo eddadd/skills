@@ -10,7 +10,6 @@
 
 | 分类      | 规则 ID       | 规则简述                                        | 等级 |
 | ------- | ----------- | ------------------------------------------- | -- |
-| 基础编码    | CR-RULE-001 | 箭头函数声明，禁止 `function` 关键字                    | S  |
 | 基础编码    | CR-RULE-002 | 禁止 `any` 类型                                 | S  |
 | 基础编码    | CR-RULE-003 | `async` 配套 `try/catch/finally`              | S  |
 | 基础编码    | CR-RULE-004 | Props 禁止 `Record<string, any>`              | S  |
@@ -30,6 +29,7 @@
 | 基础编码    | CR-RULE-018 | 方法命名使用动词+名词驼峰                               | M  |
 | 基础编码    | CR-RULE-019 | 事件方法使用 `on` / `handle` 开头                   | M  |
 | 基础编码    | CR-RULE-020 | 接口注释使用 `@api`                               | M  |
+| 基础编码    | CR-RULE-001 | 建议使用箭头函数，但不强制                              | R  |
 | API 与数据 | CR-RULE-101 | 使用 `request` 封装，禁止直接 `axios`                | S  |
 | API 与数据 | CR-RULE-102 | API 类型定义在 `api/{domain}/model.d.ts`         | S  |
 | API 与数据 | CR-RULE-103 | 禁止组件内定义 API 类型                              | M  |
@@ -91,26 +91,6 @@
 ***
 
 ## 违规规则项详细说明
-
-### CR-RULE-001：箭头函数声明
-
-- **类别**: 基础编码规范
-- **等级**: 🔴 S（Blocking）
-- **来源**: AGENTS.md → 函数
-- **检查方式**: 人工审查 + ESLint（需配置 `prefer-arrow-callback`）
-- **描述**: 必须使用箭头函数 `const xxx = () => {}`，禁止 `function xxx(){}` 声明；API 层接口除外
-
-```ts
-// ✅ 正确
-export const getXxxServer = (data: API.XxxParams) => request({ url: '/xxx', data })
-
-// ❌ 错误
-export function getXxxServer(data: API.XxxParams) {
-  return request({ url: '/xxx', data })
-}
-```
-
-***
 
 ### CR-RULE-002：禁止 `any` 类型
 
@@ -462,6 +442,26 @@ const sizeChange = (val: number) => {}
  * @return { Promise<API.TableListResult<API.XxxItem>> }
  */
 export const getXxxListServer = (data) => request({ url: '/xxx', data })
+```
+
+***
+
+### CR-RULE-001：箭头函数声明
+
+- **类别**: 基础编码规范
+- **等级**: 🔵 R（Suggestion）
+- **来源**: AGENTS.md → 函数
+- **检查方式**: 人工审查
+- **描述**: 建议使用箭头函数 `const xxx = () => {}`，风格上更契合 Composition API 与 `<script setup>` 的书写习惯，但不强制要求；使用 `function` 声明不会造成 CR 阻塞，仅在风格不一致时作为建议提醒；API 层接口仍推荐箭头函数写法
+
+```ts
+// ✅ 推荐
+export const getXxxServer = (data: API.XxxParams) => request({ url: '/xxx', data })
+
+// 🔄 亦可接受
+export function getXxxServer(data: API.XxxParams) {
+  return request({ url: '/xxx', data })
+}
 ```
 
 ***
@@ -1187,9 +1187,9 @@ defineProps({ status: String })
 
 | 等级                   | 数量     | 说明          |
 | -------------------- | ------ | ----------- |
-| S（Severe / Blocking） | 12     | 阻塞级：违反即不可合并 |
+| S（Severe / Blocking） | 11     | 阻塞级：违反即不可合并 |
 | M（Medium / Warning）  | 48     | 警告级：建议修改    |
-| R（Recommendation）    | 2      | 建议级：可延后处理   |
+| R（Recommendation）    | 3      | 建议级：可延后处理   |
 | **合计**               | **62** | <br />      |
 
 ***
