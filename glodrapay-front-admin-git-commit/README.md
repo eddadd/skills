@@ -19,8 +19,7 @@
 ```
 <project-root>/
 └── .agents/skills/glodrapay-front-admin-git-commit/
-    ├── SKILL.md     ← skill 定义与执行入口
-    ├── meta.json    ← skill 元数据
+    ├── SKILL.md     ← skill 定义与执行入口（含 frontmatter 元数据）
     └── README.md    ← 说明文档
 ```
 

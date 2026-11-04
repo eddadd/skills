@@ -5,6 +5,7 @@ license: MIT
 compatibility: 需要已初始化的 openspec（`openspec-cn`）工作流（/opsx-* 命令存在）与 `spec-driven` schema 的 change。本 skill 纯增强、无外部依赖、无运行时文件。
 metadata:
   author: syf
+  version: "1.0"
 ---
 
 # openspec-spec-methodology
